@@ -1,0 +1,20 @@
+[
+	{
+		"id":   "YYZ123",
+		"name": "testi",
+		"info": "testi",
+
+		"owner": "ABC123",
+
+		"members": [ "ABC124", "ABC125" ]
+	},
+	{
+		"id":   "YYZ124",
+		"name": "testi2",
+		"info": "testi2",
+
+		"owner": "XYZ123",
+
+		"members": [ "XYZ124", "XYZ125" ]
+	}
+]

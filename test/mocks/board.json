@@ -1,0 +1,40 @@
+{
+	"id":   "YYZ123",
+	"name": "testi",
+	"info": "testi",
+
+	"tickets": [
+		{
+			"id": "KYX123",
+			"heading":     "testi",
+			"description": "testi",
+			"position": {
+				"x": 0, "y": 0, "z": 0
+			}
+		},
+		{
+			"id": "KYX124",
+			"heading":     "testi",
+			"description": "testi",
+			"position": {
+				"x": 0, "y": 0, "z": 0
+			}
+		}
+	],
+
+	"owner": {
+		"id": "ABC123",
+		"email": "seppo@taalas.maa"
+	},
+
+	"members": [
+		{
+			"id": "ABC124",
+			"email": "pekka@pouta.fi"
+		},
+		{
+			"id": "ABC125",
+			"email": "kari@taalas.maa"
+		}
+	]
+}
