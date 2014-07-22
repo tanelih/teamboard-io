@@ -4,6 +4,11 @@
     "description": "Socket.IO service for Teamboard",
     "license":     "MIT",
 
+    "scripts": {
+        "test":  "./node_modules/.bin/gulp test",
+        "start": "node index.js"
+    },
+
     "dependencies": {
         "lodash":          "~2.4.1",
         "request":         "~2.36.0",
