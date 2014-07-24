@@ -1,36 +1,34 @@
 'use strict';
 
 
-var config  = require('../config');
 var request = require('request');
+var config  = require('../config');
 
-var api_root = config.api.host + ':' + config.api.port +
-	'/api/' + config.api.version + '/';
-
-var _responses = {
-	'GET':    [ 200 ],
-	'PUT':    [ 200 ],
-	'POST':   [ 200, 201 ],
-	'DELETE': [ 200 ]
-}
+var root = config.api.url + ':' + config.api.port + '/' +
+	config.api.version + '/';
 
 function _request(token, method) {
 	return function(resource, data, callback) {
 
-		var json = '';
+		var jsonstr = '';
 
+		// if data is present stringify it, otherwise
+		// callback was passed in as second argument
 		if((typeof data === 'function') && !callback) {
 			callback = data;
 		}
 		else if(typeof data === 'object') {
-			json = JSON.stringify(data);
+			jsonstr = JSON.stringify(data);
 		}
 
 		var opts = {
-			url:     api_root + resource,
-			data:    json,
+			url:     root + resource,
+			data:    jsonstr,
 			method:  method,
-			headers: { 'authorization': 'Bearer ' + token }
+			headers: {
+				'content-type':  'application/json',
+				'authorization': 'bearer ' + token + ''
+			}
 		}
 
 		request(opts, function(err, res, body) {
@@ -39,31 +37,28 @@ function _request(token, method) {
 				return callback(err);
 			}
 
-			if(_responses[method].indexOf(res.statusCode) < 0) {
+			if(res.statusCode >= 400) {
 				var err        = new Error('HTTP Error');
 				    err.status = res.statusCode;
 				return callback(err);
 			}
 
-			var parsed = null;
+			var content = null;
 
 			try {
-				parsed = JSON.parse(body);
+				content = JSON.parse(body);
 			}
 			catch(parseError) {
 				console.log('Error', parseError, '\nParsing', body);
 			}
 
-			return callback(null, parsed);
+			return callback(null, content);
 		});
 	}
 }
 
 module.exports = function(token) {
 	return {
-		get:    _request(token, 'GET'),
-		put:    _request(token, 'PUT'),
-		post:   _request(token, 'POST'),
-		delete: _request(token, 'DELETE')
+		get: _request(token, 'GET')
 	}
 }
