@@ -8,7 +8,6 @@ module.exports.join = function(socket) {
 		function(data, callback) {
 
 			var resource = 'boards/' + data.board + '';
-
 			socket.request.get(resource, function(err, board) {
 
 				if(err) {
@@ -33,7 +32,6 @@ module.exports.leave = function(socket) {
 		function(data, callback) {
 
 			var resource = 'boards/' + data.board + '';
-
 			socket.request.get(resource, function(err, board) {
 
 				if(err) {
