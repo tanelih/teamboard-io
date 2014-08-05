@@ -6,11 +6,11 @@ var _ = require('lodash');
 var config = {
 	common: {
 		port: process.env.PORT || 9001,
-		api:  { version: 'v1' }
+		api:  { version: 'api/v1' }
 	},
 	development: {
 		api: {
-			host: 'http://localhost',
+			url:  'http://localhost',
 			port: 9002
 		},
 		redis: {
@@ -20,7 +20,7 @@ var config = {
 	},
 	production: {
 		api: {
-			host: process.env.API_HOST,
+			url:  process.env.API_URL,
 			port: process.env.API_PORT
 		},
 		redis: {

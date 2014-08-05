@@ -7,7 +7,7 @@ var config = require('../config');
 
 before(function() {
 
-	var api = config.api.host + ':' + config.api.port + '';
+	var api = config.api.url + ':' + config.api.port + '';
 
 	nock(api).persist()
 

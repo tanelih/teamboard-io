@@ -25,7 +25,7 @@ to `development`. If `NODE_ENV` is not set, it defaults to `development`.
 If you set `NODE_ENV` to `production`, you must provide the additional
 environmental variables:
 
-- `API_HOST` and `API_PORT` corresponding to a running instance of
+- `API_URL` and `API_PORT` corresponding to a running instance of
   `teamboard-api`.
 - `REDIS_HOST` and `REDIS_PORT` corresponding to a running instance of `redis`.
 
@@ -45,3 +45,4 @@ Run tests with:
 ```
 npm test
 ```
+# hook test
