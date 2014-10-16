@@ -5,22 +5,27 @@ var _ = require('lodash');
 
 var config = {
 
-	common: {
-		port: process.env.PORT || 9001,
+	'common': {
+		'port': process.env.PORT || 9001,
 	},
 
-	development: {
-		api:   'http://localhost:9002',
-		redis: { host: 'localhost', port: 6379 }
+	'development': {
+
+		'api': 'http://localhost:9002',
+
+		'redis': {
+			'host': 'localhost',
+			'port': 6379
+		}
 	},
 
-	production: {
+	'production': {
 
-		api: process.env.API_URL,
+		'api': process.env.API_URL,
 
-		redis: {
-			host: process.env.REDIS_HOST,
-			port: process.env.REDIS_PORT
+		'redis': {
+			'host': process.env.REDIS_HOST,
+			'port': process.env.REDIS_PORT
 		}
 	}
 }
