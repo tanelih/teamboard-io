@@ -29,7 +29,14 @@ io.use(function(socket, next) {
 		return next(new Error('Authorization required'));
 	}
 
-	request.get(config.api + '/auth', function(err, res, body) {
+	var options = {
+		'url': config.api + '/auth',
+		'headers': {
+			'Authorization': 'Bearer ' + token + ''
+		}
+	}
+
+	request.get(options, function(err, res, body) {
 		if(err) {
 			return next(err);
 		}
@@ -38,7 +45,9 @@ io.use(function(socket, next) {
 			return next(new Error(body));
 		}
 
-		socket.request.user = JSON.parse(body);
+		socket.request.user       = JSON.parse(body);
+		socket.request.user.token = token;
+
 		return next();
 	});
 });
@@ -56,11 +65,15 @@ function handler(socket, type) {
 		// Make sure callback is something that can be called.
 		callback = typeof(callback) == 'function' ? callback : noop;
 
-		// The URL for our request.
-		var url = config.api + '/boards/' + payload.board + '';
+		var options = {
+			'url': config.api + '/boards/' + payload.board + '';
+			'headers': {
+				'Authorization': 'Bearer ' + socket.request.user.token + ''
+			}
+		}
 
 		// Get the board specified in 'payload.board'.
-		request.get(url, function(err, res, body) {
+		request.get(options, function(err, res, body) {
 			if(err) {
 				return callback(err);
 			}
