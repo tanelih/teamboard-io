@@ -34,6 +34,10 @@ io.use(function(socket, next) {
 			return next(err);
 		}
 
+		if(res.statusCode != 200) {
+			return next(new Error(body));
+		}
+
 		socket.request.user = JSON.parse(body);
 		return next();
 	});
