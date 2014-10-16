@@ -66,7 +66,7 @@ function handler(socket, type) {
 		callback = typeof(callback) == 'function' ? callback : noop;
 
 		var options = {
-			'url': config.api + '/boards/' + payload.board + '';
+			'url': config.api + '/boards/' + payload.board + '',
 			'headers': {
 				'Authorization': 'Bearer ' + socket.request.user.token + ''
 			}
