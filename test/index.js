@@ -29,5 +29,8 @@ describe('Basic Usage', function() {
 
 	describe('Joining a room',
 		require('./spec/joining-a-room')(context));
+
+	describe('Leaving a room',
+		require('./spec/leaving-a-room')(context));
 });
 
