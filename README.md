@@ -25,8 +25,7 @@ to `development`. If `NODE_ENV` is not set, it defaults to `development`.
 If you set `NODE_ENV` to `production`, you must provide the additional
 environmental variables:
 
-- `API_URL` corresponding to a running instance of
-  `teamboard-api`.
+- `API_URL` corresponding to a running instance of `teamboard-api`.
 - `REDIS_HOST` and `REDIS_PORT` corresponding to a running instance of `redis`.
 
 You can also specify `PORT` in which the service will then reside, defaults to

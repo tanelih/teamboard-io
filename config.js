@@ -11,7 +11,7 @@ var config = {
 
 	'development': {
 
-		'api': 'http://localhost:9002',
+		'api': 'http://localhost:9002/api',
 
 		'redis': {
 			'host': 'localhost',
