@@ -1,5 +1,6 @@
 'use strict';
 
+var nr      = require('newrelic');
 var io      = require('socket.io')();
 var redis   = require('socket.io-redis')
 var request = require('request');
@@ -12,6 +13,24 @@ var config = require('./config');
 var noop = function() { }
 
 /**
+ * Quick utility to end 'newrelic' transactions while returning 'null'.
+ */
+var ok = function() {
+	nr.endTransaction();
+	return null;
+}
+
+/**
+ * Quick error-utility to make 'newrelic' aware of errors and end any ongoing
+ * transactions.
+ */
+var error = function(err) {
+	nr.noticeError(err);
+	nr.endTransaction();
+	return err;
+}
+
+/**a
  * Set Redis as our 'MemoryStore' for much scalability.
  */
 io.adapter(redis({
@@ -22,11 +41,11 @@ io.adapter(redis({
 /**
  * Authenticate incoming requests.
  */
-io.use(function(socket, next) {
+io.use(nr.createWebTransaction('/websocket/handshake', function(socket, next) {
 	var token = socket.request._query['access-token'];
 
 	if(!token) {
-		return next(new Error('Authorization required'));
+		return next(error.call(this, new Error('Authorization required')));
 	}
 
 	var options = {
@@ -36,21 +55,22 @@ io.use(function(socket, next) {
 		}
 	}
 
-	request.get(options, function(err, res, body) {
-		if(err) {
-			return next(err);
-		}
+	request.get(options, nr.createBackgroundTransaction('get:user',
+		function(err, res, body) {
+			if(err) {
+				return next(error.call(this, err));
+			}
 
-		if(res.statusCode != 200) {
-			return next(new Error(body));
-		}
+			if(res.statusCode != 200) {
+				return next(error.call(this, new Error(body)));
+			}
 
-		socket.request.user       = JSON.parse(body);
-		socket.request.user.token = token;
+			socket.request.user       = JSON.parse(body);
+			socket.request.user.token = token;
 
-		return next();
-	});
-});
+			return next(ok.call(this));
+		}));
+}));
 
 /**
  * Handler for the 'leave' and 'join' requests.
@@ -61,38 +81,38 @@ io.use(function(socket, next) {
  *      'clients' method we can send a list of connected users on join.
  */
 function handler(socket, type) {
-	return function(payload, callback) {
-		// Make sure callback is something that can be called.
-		callback = typeof(callback) == 'function' ? callback : noop;
+	return nr.createWebTransaction('/websocket/' + type + '',
+		function(payload, callback) {
+			// Make sure callback is something that can be called.
+			callback = typeof(callback) == 'function' ? callback : noop;
 
-		var options = {
-			'url': config.api + '/boards/' + payload.board + '',
-			'headers': {
-				'Authorization': 'Bearer ' + socket.request.user.token + ''
-			}
-		}
-
-		// Get the board specified in 'payload.board'.
-		request.get(options, function(err, res, body) {
-			if(err) {
-				return callback(err);
+			var options = {
+				'url': config.api + '/boards/' + payload.board + '',
+				'headers': {
+					'Authorization': 'Bearer ' + socket.request.user.token + ''
+				}
 			}
 
-			if(res.statusCode != 200) {
-				return callback(new Error(body));
-			}
+			// Get the board specified in 'payload.board'.
+			request.get(options, nr.createBackgroundTransaction('get:board',
+				function(err, res, body) {
+					if(err) return callback(error.call(this, err));
 
-			var board = JSON.parse(body);
+					if(res.statusCode != 200) {
+						return callback(error.call(this, new Error(body)));
+					}
 
-			socket.join(board.id)
-				.to(board.id).emit('board:' + type + '', {
-					'user':  socket.request.user.id,
-					'board': board.id
-				});
+					var board = JSON.parse(body);
 
-			return callback(null);
+					socket.join(board.id).to(board.id)
+						.emit('board:' + type + '', {
+							'user':  socket.request.user.id,
+							'board': board.id
+						});
+
+					return callback(ok.call(this));
+				}));
 		});
-	}
 }
 
 /**
