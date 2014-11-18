@@ -1,7 +1,8 @@
 'use strict';
 
-var io     = require('./server');
+var nr     = require('newrelic');
+var server = require('./server');
 var config = require('./config');
 
-io.listen(config.port);
+server.listen(config.port);
 console.log('socket.io listening at port: ', config.port);
