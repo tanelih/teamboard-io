@@ -32,7 +32,10 @@ var subClient = redis.createClient(
 	}
 );
 
-io.adapter(socketIORedis({ pub: pubClient, sub: subClient }));
+io.adapter(socketIORedis({
+	pubClient: pubClient,
+	subClient: subClient
+}));
 
 /**
  * Authenticate incoming requests.
