@@ -62,7 +62,6 @@ io.use(function handshake(socket, next) {
 
 		socket.request.user       = JSON.parse(body);
 		socket.request.user.token = token;
-
 		return next();
 	});
 });
@@ -102,7 +101,6 @@ function handler(socket, type) {
 					'user':  socket.request.user.id,
 					'board': board.id
 				});
-
 			return callback();
 		});
 	}
