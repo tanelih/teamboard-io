@@ -13,7 +13,7 @@ var config = require('./config');
  */
 var noop = function() { }
 
-/**a
+/**
  * Set Redis as our 'MemoryStore' for much scalability.
  *
  * NOTE We need to create custom pub and sub clients because of authentication
@@ -32,10 +32,15 @@ var subClient = redis.createClient(
 	}
 );
 
-io.adapter(socketIORedis({
+var redisAdapter = socketIORedis({
 	pubClient: pubClient,
 	subClient: subClient
-}));
+});
+
+redisAdapter.pubClient.on('error', console.log);
+redisAdapter.subClient.on('error', console.log);
+
+io.adapter(redisAdapter);
 
 /**
  * Authenticate incoming requests.
