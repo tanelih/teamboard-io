@@ -1,34 +1,13 @@
 'use strict';
 
-
-var _ = require('lodash');
-
-var config = {
-
-	'common': {
-		'port': process.env.PORT || 9001,
+module.exports = {
+	redis: {
+		opts: {
+			auth_pass: process.env.REDIS_PASS
+		},
+		port: process.env.REDIS_PORT || 6379,
+		host: process.env.REDIS_HOST || 'localhost'
 	},
-
-	'development': {
-
-		'api': 'http://localhost:9002/api',
-
-		'redis': {
-			'host': 'localhost',
-			'port': 6379
-		}
-	},
-
-	'production': {
-
-		'api': process.env.API_URL,
-
-		'redis': {
-			'host': process.env.REDIS_HOST,
-			'port': process.env.REDIS_PORT
-		}
-	}
+	api:  process.env.API_URL || 'http://localhost:9002/api',
+	port: process.env.PORT    || 9001
 }
-
-module.exports = _.merge(config.common,
-	config[process.env.NODE_ENV] || config.development);
