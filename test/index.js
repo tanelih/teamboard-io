@@ -7,11 +7,11 @@ var config = require('../config');
 
 before(function() {
 	return nock(config.api).persist()
-		.get('/auth')
+		.get('/api/auth')
 			.replyWithFile(200, './test/mocks/user.json')
-		.get('/boards/found')
+		.get('/api/boards/found')
 			.replyWithFile(200, './test/mocks/board.json')
-		.get('/boards/notfound')
+		.get('/api/boards/notfound')
 			.reply(404);
 });
 
