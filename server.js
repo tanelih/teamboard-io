@@ -44,9 +44,10 @@ io.adapter(socketIORedis({
  * Configuration for 'jarmo-socket.io'.
  */
 
-var jarmo = require('jarmo-socket.io');
+process.env.INSTANCE_NAME =
+	process.env.INSTANCE_NAME || process.env.HOSTNAME || 'unknown';
 
-io.use(jarmo({
+io.use(require('jarmo-socket.io')({
 	/**
 	 * When clients are connected, report InfluxDB compliant payload to the
 	 * Jarmo service.
@@ -54,13 +55,13 @@ io.use(jarmo({
 	onConnect: function(socket, numConn) {
 		return {
 			tags: {
-				version:  process.env.VERSION  || 'unknown',
-				hostname: process.env.HOSTNAME || 'unknown'
+				version:  process.env.VERSION || 'unknown',
+				hostname: process.env.INSTANCE_NAME
 			},
 			fields: {
 				value: numConn
 			},
-			name: 'num_connection'
+			name: '' + process.env.INSTANCE_NAME + '.num_connection'
 		}
 	},
 
@@ -71,22 +72,22 @@ io.use(jarmo({
 	onDisconnect: function(socket, numConn, connDuration) {
 		return [{
 			tags: {
-				version:  process.env.VERSION  || 'unknown',
-				hostname: process.env.HOSTNAME || 'unknown'
+				version:  process.env.VERSION || 'unknown',
+				hostname: process.env.INSTANCE_NAME
 			},
 			fields: {
 				value: numConn
 			},
-			name: 'num_connection'
+			name: '' + process.env.INSTANCE_NAME + '.num_connection'
 		}, {
 			tags: {
-				version:  process.env.VERSION  || 'unknown',
-				hostname: process.env.HOSTNAME || 'unknown'
+				version:  process.env.VERSION || 'unknown',
+				hostname: process.env.INSTANCE_NAME
 			},
 			fields: {
 				value: connDuration
 			},
-			name: 'conn_duration'
+			name: '' + process.env.INSTANCE_NAME + '.conn_duration'
 		}]
 	},
 
