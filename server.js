@@ -172,6 +172,26 @@ function handler(socket, type) {
  * Setup listeners for a connected client.
  */
 io.sockets.on('connection', function(socket) {
+
+	socket.on('board:ping', function(payload) {
+		// TODO check that the socket is actually in the room we are pinging
+		socket.to(payload.board).emit('board:event', {
+			type:  'BOARD_PING',
+			user:  payload.user,
+			board: payload.board
+		});
+	});
+
+	socket.on('ticket:activity', function onTicketActivity(payload) {
+		// TODO check that the socket is actually in the room we are pinging
+		socket.to(payload.board).emit('board:event', {
+			type:   'TICKET_ACTIVITY',
+			user:   payload.user,
+			board:  payload.board,
+			ticket: payload.ticket
+		});
+	});
+
 	socket.on('board:join',  handler(socket, 'join'));
 	socket.on('board:leave', handler(socket, 'leave'));
 });
