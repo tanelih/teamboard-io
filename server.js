@@ -182,7 +182,7 @@ io.sockets.on('connection', function(socket) {
 		});
 	});
 
-	socket.on('ticket:activity', function onTicketActivity(payload) {
+	socket.on('ticket:activity', function(payload) {
 		// TODO check that the socket is actually in the room we are pinging
 		socket.to(payload.board).emit('board:event', {
 			type:   'TICKET_ACTIVITY',
